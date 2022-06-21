@@ -1,1 +1,3 @@
 /data/direct_chats/*
+
+!/data/direct_chats/example.txt
