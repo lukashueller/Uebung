@@ -1,3 +1,5 @@
+/__pycache__/
+
 /data/direct_chats/*
 /data/group_chats/*
 
