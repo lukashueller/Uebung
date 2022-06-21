@@ -19,8 +19,8 @@ class DirectChatReader():
 
         count = 0
         for line in Lines:
-            #if count % 1000 == 0 : print(count)
-            #if count == 100 : break # JUST FOR DEBUGGING (Interrupt after 5 lines)
+            #if count % 100 == 0 : print(count)
+            #if count == 10000 : break # JUST FOR DEBUGGING (Interrupt after 5 lines)
 
             self.extract(line)
             count += 1
@@ -35,8 +35,8 @@ class DirectChatReader():
 
     def extract(self, line:str) : 
         #print(re.split(']|:', line, 2))
-        if line.startswith("[") :
-            result = re.search(r'\[(.*?)\](.*?)\:(\s\S.*)', line)
+        if re.match(r'^\[\d\d\.\d\d\.\d\d, \d\d:\d\d:\d\d\]', line) :
+            result = re.search(r'^\[(.*?)\](.*?)\:(\s\S.*)', line)
             
             singleChatLineObject = self.directChatObject(
                 result.group(1).strip().replace("\u200e",""),
