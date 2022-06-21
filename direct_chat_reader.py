@@ -1,4 +1,5 @@
 import re
+import emoji
 from enum import Enum
 
 from pprint import pprint
@@ -21,6 +22,7 @@ class DirectChatReader():
             self.message_type = messageType
     
     chat = []
+    emojiDict = {}
 
     def read_chat(self, filename:str) :
         print(" --- START READ " + filename)
@@ -32,12 +34,12 @@ class DirectChatReader():
         count = 0
         for line in Lines:
             #if count % 100 == 0 : print(count)
-            if count == 35 : break # JUST FOR DEBUGGING (Interrupt after 5 lines)
+            #if count == 35 : break # JUST FOR DEBUGGING (Interrupt after 5 lines)
 
-            self.extract(line)
+            self.extract(line, count)
             count += 1
 
-        if self.chat[0].message.startswith("Messages and calls are end-to-end encrypted.") : 
+        if self.chat[0].message.startswith("Messages and calls are end-to-end encrypted.") or self.chat[0].message.startswith("Nachrichten und Anrufe sind Ende-zu-Ende-verschlüsselt.") : 
             self.chat.pop(0)
 
         """ for line in self.chat : 
@@ -47,14 +49,19 @@ class DirectChatReader():
 
         print(" --- END READ " + filename)
 
-    def extract(self, line:str) : 
-        # check if this line is a new message
-        if re.match(r'^\[\d\d\.\d\d\.\d\d, \d\d:\d\d:\d\d\]', line) :
-            result = re.search(r'^\[(.*?)\](.*?)\:(\s\S.*)', line)
+    def extract(self, line:str, count:int) : 
+        if re.match(r'\[\d\d\.\d\d\.\d\d, \d\d:\d\d:\d\d\]', line) or " omitted" in line or " weggelassen" in line: # THIS IS CURRENTLY A WORKAROUND ... DONT KNOW WHY THE REGEX ISTN'T WORKING
+            result = re.search(r'\[(.*?)\](.*?)\:(\s\S.*)', line)
             
             timestamp = result.group(1).strip().replace("\u200e","")
             person = result.group(2).strip().replace("\u200e","")
             message = result.group(3).strip().replace("\u200e","")
+            emojisFromMessage = ''.join(c for c in message if c in emoji.UNICODE_EMOJI['en'])
+
+            """ if len(emojisFromMessage) != 0 :
+                for singleEmoji in emojisFromMessage : 
+                    print(singleEmoji)
+                    self.emojiDict[str(singleEmoji)] += 1 """
             
             message_type = self.return_message_type(message)
 
@@ -64,17 +71,17 @@ class DirectChatReader():
             self.chat[-1].message = self.chat[-1].message + "\n" + line
 
     def return_message_type(self, message:str) : 
-        if "audio omitted" in message : 
+        if "audio omitted" in message or "Audio weggelassen" in message: 
             return self.MessageTypes.AUDIO
-        elif "image omitted" in message : 
+        elif "image omitted" in message or "Bild weggelassen" in message: 
             return self.MessageTypes.IMAGE
-        elif "video omitted" in message : 
+        elif "video omitted" in message or "Video weggelassen" in message: 
             return self.MessageTypes.VIDEO
-        elif "GIF omitted" in message : 
+        elif "GIF omitted" in message or "GIF weggelassen" in message: 
             return self.MessageTypes.GIF
-        elif "sticker omitted" in message : 
+        elif "sticker omitted" in message or "Sticker weggelassen" in message: 
             return self.MessageTypes.STICKER
-        elif "document omitted" in message : 
+        elif "document omitted" in message or "Dokument weggelassen" in message: 
             return self.MessageTypes.DOCUMENT
         else :
             return self.MessageTypes.TEXT
@@ -82,8 +89,9 @@ class DirectChatReader():
     def print_statistics(self) : 
         print(" ---- Number of Messages in Chat: " + str(len(self.chat)))
         print(" ---- Number of TEXT MESSAGES send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.TEXT, self.chat))))
+        print(" ---- Number of AUDIOS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.AUDIO, self.chat))))
         print(" ---- Number of IMAGES send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.IMAGE, self.chat))))
+        print(" ---- Number of VIDEOS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.VIDEO, self.chat))))
         print(" ---- Number of GIFS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.GIF, self.chat))))
-
-
-
+        print(" ---- Number of STICKERS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.STICKER, self.chat))))
+        print(" ---- Number of DOCUMENTS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.DOCUMENT, self.chat))))
