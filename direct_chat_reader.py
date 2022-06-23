@@ -1,6 +1,7 @@
 import re
 import emoji
 from enum import Enum
+from collections import Counter
 
 from pprint import pprint
 
@@ -22,6 +23,7 @@ class DirectChatReader():
             self.message_type = messageType
     
     chat = []
+    emojiArray = []
     emojiDict = {}
 
     def read_chat(self, filename:str) :
@@ -45,9 +47,9 @@ class DirectChatReader():
         """ for line in self.chat : 
             pprint(vars(line)) """
 
-        self.print_statistics()
-
         print(" --- END READ " + filename)
+
+        self.print_statistics()
 
     def extract(self, line:str, count:int) : 
         if re.match(r'\[\d\d\.\d\d\.\d\d, \d\d:\d\d:\d\d\]', line) or " omitted" in line or " weggelassen" in line: # THIS IS CURRENTLY A WORKAROUND ... DONT KNOW WHY THE REGEX ISTN'T WORKING
@@ -58,10 +60,9 @@ class DirectChatReader():
             message = result.group(3).strip().replace("\u200e","")
             emojisFromMessage = ''.join(c for c in message if c in emoji.UNICODE_EMOJI['en'])
 
-            """ if len(emojisFromMessage) != 0 :
+            if len(emojisFromMessage) != 0 :
                 for singleEmoji in emojisFromMessage : 
-                    print(singleEmoji)
-                    self.emojiDict[str(singleEmoji)] += 1 """
+                    self.emojiArray.append(singleEmoji)
             
             message_type = self.return_message_type(message)
 
@@ -87,6 +88,7 @@ class DirectChatReader():
             return self.MessageTypes.TEXT
 
     def print_statistics(self) : 
+        print(" --- MESSAGE TYPE STATISTICS:")
         print(" ---- Number of Messages in Chat: " + str(len(self.chat)))
         print(" ---- Number of TEXT MESSAGES send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.TEXT, self.chat))))
         print(" ---- Number of AUDIOS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.AUDIO, self.chat))))
@@ -95,3 +97,11 @@ class DirectChatReader():
         print(" ---- Number of GIFS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.GIF, self.chat))))
         print(" ---- Number of STICKERS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.STICKER, self.chat))))
         print(" ---- Number of DOCUMENTS send: " + str(sum(map(lambda x : x.message_type == self.MessageTypes.DOCUMENT, self.chat))))
+        
+        print(" --- EMOJI STATISTICS:")
+        print(("{:<8} {:>8}").format('  EMOJI','NUMBER'))
+        emojiCounter = Counter(self.emojiArray)
+        emojiCounter = emojiCounter.most_common()
+        for item in emojiCounter:
+            print(("{:<8} {:>5}").format("    " + item[0], item[1]))
+
