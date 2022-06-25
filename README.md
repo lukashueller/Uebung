@@ -22,6 +22,7 @@ If you have your own chat histories, save them in the /data folder in the approp
 ```console
 sudo pip3 install Click
 sudo pip3 install emoji
+sudo pip3 install -U nltk
 ```
 
 **Run the analyser**
