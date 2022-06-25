@@ -21,12 +21,22 @@ If you have your own chat histories, save them in the /data folder in the approp
 **Install required modules:**
 ```console
 sudo pip3 install Click
-sudo pip install emoji
+sudo pip3 install emoji
 ```
 
 **Run the analyser**
 ```console
 python3 main.py -d "example.txt"
+```
+
+**Specify the number of printed statistics**  
+Display only the 5 most frequent occurrences:
+```console
+python3 main.py -d "example.txt" -e 5 -w 5
+```
+Display all occurences:
+```console
+python3 main.py -d "example.txt" -e "all" -w "all"
 ```
 
 *Attention: currently the code only works with German or English WhatsApp exports!*
