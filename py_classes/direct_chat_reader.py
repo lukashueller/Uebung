@@ -30,6 +30,7 @@ class DirectChatReader():
             count += 1
 
         if self.chat[0].message.startswith("Messages and calls are end-to-end encrypted.") or self.chat[0].message.startswith("Nachrichten und Anrufe sind Ende-zu-Ende-verschlüsselt.") : 
+            # Currently, we only check whether the switch to E:E Encryption took place at the start of the chat. Here it would have to be iterated over self.chat()
             self.chat.pop(0)
 
         """ for line in self.chat : 
