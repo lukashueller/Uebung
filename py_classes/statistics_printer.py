@@ -60,7 +60,5 @@ class StatisticsPrinter():
             else : return True
 
         filtered_words = list(filter(filter_stop_words, word_counter))
-        print(len(german_stop_words))
-        print(len(word_counter))
-        print(len(filtered_words))
+        print(" ---- FILTERED " + str(len(word_counter) - len(filtered_words)) + " stop words. (" + str(len(german_stop_words)) + " were possible)")
         return filtered_words
