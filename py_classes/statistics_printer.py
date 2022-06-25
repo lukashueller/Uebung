@@ -20,8 +20,7 @@ class StatisticsPrinter():
     def print_emoji_statistics(self, emojiArray, print_emojis) :
         print(" --- EMOJI STATISTICS:")
         print(("{:<8} {:>8}").format('  EMOJI','NUMBER'))
-        emojiCounter = Counter(emojiArray)
-        emojiCounter = emojiCounter.most_common()
+        emojiCounter = Counter(emojiArray).most_common()
 
         for i, item in enumerate(emojiCounter) :
             print(("{:<8} {:>5}").format("    " + item[0], item[1]))
