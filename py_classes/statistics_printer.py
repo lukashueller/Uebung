@@ -1,7 +1,7 @@
 import emoji
 from collections import Counter
 from py_classes.models.MessageTypes import MessageTypes
-from sklearn.feature_extraction.text import CountVectorizer
+from nltk.corpus import stopwords
 
 class StatisticsPrinter():
     def print_statistics(self, preprocessed_chat, emojiArray, number_print_emojis, number_print_words) : 
@@ -44,10 +44,23 @@ class StatisticsPrinter():
                     message_text=message_text.replace(char,' ').lower()
                 messages_as_text += message_text + " "
 
-        wordsCounter = Counter(messages_as_text.split()).most_common()
+        word_counter = Counter(messages_as_text.split()).most_common()
+        word_counter = self.word_counter_wo_stop_words(word_counter)
 
         print(("{:<13} {:>10}").format('   WORD','     NUMBER'))
-        for i, item in enumerate(wordsCounter) :
+        for i, item in enumerate(word_counter) :
             if number_print_words is None and i > 15: break   # default number of displayed words
             if (number_print_words is not None) and (number_print_words != "all") and (int(number_print_words) == i) : break
             print(("{:<15} {:>8}").format("    " + item[0], item[1]))
+    
+    def word_counter_wo_stop_words(self, word_counter):
+        german_stop_words = stopwords.words('german')
+        def filter_stop_words(item) :
+            if item[0] in german_stop_words : return False
+            else : return True
+
+        filtered_words = list(filter(filter_stop_words, word_counter))
+        print(len(german_stop_words))
+        print(len(word_counter))
+        print(len(filtered_words))
+        return filtered_words
