@@ -1,5 +1,7 @@
 import re
 import emoji
+import time
+import datetime
 from py_classes.models.MessageTypes import MessageTypes
 
 from pprint import pprint
@@ -44,6 +46,7 @@ class DirectChatReader():
             result = re.search(r'\[(.*?)\](.*?)\:(\s\S.*)', line)
             
             timestamp = result.group(1).strip().replace("\u200e","")
+            timestamp = datetime.datetime.strptime(timestamp, "%d.%m.%y, %H:%M:%S")
             person = result.group(2).strip().replace("\u200e","")
             message = result.group(3).strip().replace("\u200e","")
             emojisFromMessage = ''.join(c for c in message if c in emoji.UNICODE_EMOJI['en'])

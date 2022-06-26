@@ -1,4 +1,5 @@
 import emoji
+import datetime
 from collections import Counter
 from py_classes.models.MessageTypes import MessageTypes
 from nltk.corpus import stopwords
@@ -11,6 +12,7 @@ class StatisticsPrinter():
 
     def print_message_type_statistics(self, preprocessed_chat) :
         print(" --- MESSAGE TYPE STATISTICS:")
+        print(" ---- Chat Duration: " + str((preprocessed_chat[-1].timestamp - preprocessed_chat[0].timestamp)) + " (" + str(preprocessed_chat[0].timestamp.date()) + " - " + str(preprocessed_chat[-1].timestamp.date()) + ")")
         print(" ---- Number of Messages in Chat: " + str(len(preprocessed_chat)))
         print(" ---- Number of TEXT MESSAGES send: " + str(sum(map(lambda x : x.message_type == MessageTypes.TEXT, preprocessed_chat))))
         print(" ---- Number of AUDIOS send: " + str(sum(map(lambda x : x.message_type == MessageTypes.AUDIO, preprocessed_chat))))
