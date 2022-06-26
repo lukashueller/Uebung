@@ -1,9 +1,17 @@
 # WhatsAppSentimentAnalysis
 
-This project allows you to deeply evaluate your own WhatsApp chat history. 
+### This project allows you to deeply evaluate your own WhatsApp chat history. 
 
 ## 1. What is the aim of the project?
+
+Even though other messaging services such as Telegram or Threema are becoming increasingly popular worldwide, WhatsApp remains the world’s most popular messenger with more than two billion active users per month (as of 02/22) [[Source]](https://de.statista.com/themen/1973/instant-messenger). WhatsApp is followed by the Chinese messaging alternative WeChat and Facebook Messenger. However, all alternatives of the messenger WhatsApp, which now belongs to the META Group, are used daily by only 20% of the population in Germany. In a survey from 2021 [[Source]](https://www.messengerpeople.com/de/whatsapp-nutzerzahlen-deutschland), more than 60% of respondents said they use WhatsApp daily.
+
+Many tools (such as WHATSAAN) allow only statistical analysis of the chat in terms of used words, emojis or the activity of the chat. Almost no other project tries to take a closer look at the content of a chat. Therefore, we decided to use Natural Language Processing (NLP) to analyze chat histories in more depth and set the following research questions for the project work:
+
 ## 2. Research questions
+1. Is it possible to identify the topic(s) of a chat using NLP?
+2. Is it possible to deduce what the communication is used for? (Work chat, friendly exchange, etc.)
+3. Is it possible to analyze the sentiment of a chat using NLP?
 ## 3. How-To: Download WhatsApp chat history (iPhone)
 1. Select the chat you are interested in and open it.
 2. Click on the name of your chat partner / chat group to go to the information page of the chat.
