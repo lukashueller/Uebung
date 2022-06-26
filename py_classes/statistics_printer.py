@@ -1,5 +1,4 @@
 import emoji
-import datetime
 from collections import Counter
 from py_classes.models.MessageTypes import MessageTypes
 from nltk.corpus import stopwords
