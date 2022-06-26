@@ -5,3 +5,5 @@ __pycache__/
 
 !/data/direct_chats/example.txt
 !/data/group_chats/example.txt
+
+*.pages
