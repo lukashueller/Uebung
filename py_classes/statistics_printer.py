@@ -3,6 +3,8 @@ from collections import Counter
 from py_classes.models.MessageTypes import MessageTypes
 from nltk.corpus import stopwords
 
+german_stop_words = stopwords.words('german')
+
 class StatisticsPrinter():
     def print_statistics(self, preprocessed_chat, emojiArray, number_print_emojis, number_print_words) : 
         self.print_message_type_statistics(preprocessed_chat)
@@ -47,6 +49,7 @@ class StatisticsPrinter():
 
         word_counter = Counter(messages_as_text.split()).most_common()
         word_counter = self.word_counter_wo_stop_words(word_counter)
+        print("   NUMBER OF DIFFERENT WORDS:" + str(len(word_counter)))
 
         print(("{:<13} {:>10}").format('   WORD','     NUMBER'))
         for i, item in enumerate(word_counter) :
@@ -55,7 +58,6 @@ class StatisticsPrinter():
             print(("{:<15} {:>8}").format("    " + item[0], item[1]))
     
     def word_counter_wo_stop_words(self, word_counter):
-        german_stop_words = stopwords.words('german')
         def filter_stop_words(item) :
             if item[0] in german_stop_words : return False
             else : return True
