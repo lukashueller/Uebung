@@ -15,6 +15,7 @@ def run(direct_chat_filename : str, group_chat_filename : str, number_print_emoj
         print("You can only upload one chat at the moment.")
     elif direct_chat_filename :
         chat_data = DirectChatReader().read_chat(direct_chat_filename)
+
         StatisticsPrinter().print_statistics(chat_data[0], chat_data[1], number_print_emojis, number_print_words)
     elif group_chat_filename : 
         print("Group chat analysis is not supportet at the moment.")
