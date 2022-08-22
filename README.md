@@ -33,6 +33,11 @@ sudo pip3 install emoji
 sudo pip3 install -U nltk
 ```
 
+**Downloads Stopwords**
+```console
+python -m nltk.downloader stopwords
+```
+
 **Run the analyser**
 ```console
 python3 main.py -d "example.txt"

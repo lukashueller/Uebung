@@ -2,6 +2,7 @@ import click
 
 from py_classes.direct_chat_reader import DirectChatReader
 from py_classes.statistics_printer import StatisticsPrinter
+from py_classes.count_vectorizer import CountVectorizer_Printer
 
 @click.command()
 @click.option("-d", "--direct", "direct_chat_filename", type=str, help="The name of the text file to analyze the one to one whatsapp-chat")
@@ -17,6 +18,7 @@ def run(direct_chat_filename : str, group_chat_filename : str, number_print_emoj
         chat_data = DirectChatReader().read_chat(direct_chat_filename)
 
         StatisticsPrinter().print_statistics(chat_data[0], chat_data[1], number_print_emojis, number_print_words)
+        CountVectorizer_Printer().print_count_vectorizer(chat_data[0])
     elif group_chat_filename : 
         print("Group chat analysis is not supportet at the moment.")
     else : 

@@ -45,15 +45,17 @@ class StatisticsPrinter():
         emojiCounter = Counter(emojiArray).most_common()
 
         for i, item in enumerate(emojiCounter):
-            if number_print_emojis is None and i > 10: break  # default number of displayed emojis
+            if number_print_emojis is None and i > 10:
+                break  # default number of displayed emojis
             if (number_print_emojis is not None) and (number_print_emojis != "all") and (
-                    int(number_print_emojis) == i): break
+                    int(number_print_emojis) == i):
+                break
             print(("{:<8} {:>5}").format("    " + item[0], item[1]))
 
     def print_word_count(self, preprocessed_chat, number_print_words):
         print(" --- WORD COUNT STATISTICS:")
 
-        ## Source: https://stackoverflow.com/questions/33404752/removing-emojis-from-a-string-in-python (modified)
+        # Source: https://stackoverflow.com/questions/33404752/removing-emojis-from-a-string-in-python (modified)
         def give_emoji_free_text(text):
             return emoji.get_emoji_regexp().sub(r'', text)
 
@@ -71,9 +73,11 @@ class StatisticsPrinter():
 
         print(("{:<13} {:>10}").format('   WORD', '     NUMBER'))
         for i, item in enumerate(word_counter):
-            if number_print_words is None and i > 15: break  # default number of displayed words
+            if number_print_words is None and i > 15:
+                break  # default number of displayed words
             if (number_print_words is not None) and (number_print_words != "all") and (
-                    int(number_print_words) == i): break
+                    int(number_print_words) == i):
+                break
             print(("{:<15} {:>8}").format("    " + item[0], item[1]))
 
     def word_counter_wo_stop_words(self, word_counter):
@@ -107,18 +111,8 @@ class StatisticsPrinter():
         #
         # print(dataframe)
 
-
-
-
-
-
-
-
-
-
-
         vectorizer = CountVectorizer(stop_words=frozenset(german_stop_words), analyzer='word', ngram_range=(1, 3), max_df=1.0, min_df=0.0,
-                                    max_features=None)
+                                     max_features=None)
 
         count_train = vectorizer.fit(docs)
         X = vectorizer.transform(docs)
