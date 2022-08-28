@@ -1,79 +1,79 @@
 import re
 import emoji
-import time
+import logging
 import datetime
 from py_classes.models.MessageTypes import MessageTypes
 
 from pprint import pprint
 
-class DirectChatReader():
-    class directChatObject(object):
+
+class DirectChatReader:
+    class DirectChatObject(object):
         def __init__(self, timestamp, person, message, messageType):
             self.timestamp = timestamp
             self.person = person
             self.message = message
             self.message_type = messageType
-    
+
     chat = []
     emojiArray = []
 
-    def read_chat(self, filename:str) :
-        print(" --- START READ " + filename)
+    def read_chat(self, filepath: str):
+        logging.info(" >>> START READ " + filepath)
 
-        chat = open('data/direct_chats/'+filename, mode = 'r', encoding='utf-8')
-        Lines = chat.readlines()
+        chat = open(filepath, mode='r', encoding='utf-8')
+        lines = chat.readlines()
         chat.close()
 
         count = 0
-        for line in Lines:
-            #if count == 5 : break # JUST FOR DEBUGGING (Interrupt after 5 lines)
-
+        for line in lines:
             self.extract(line)
             count += 1
 
-        if self.chat[0].message.startswith("Messages and calls are end-to-end encrypted.") or self.chat[0].message.startswith("Nachrichten und Anrufe sind Ende-zu-Ende-verschlüsselt.") : 
-            # Currently, we only check whether the switch to E:E Encryption took place at the start of the chat. Here it would have to be iterated over self.chat()
-            self.chat.pop(0)
-
-        """ for line in self.chat : 
-            pprint(vars(line)) """
-
-        print(" --- END READ " + filename)
+        logging.info(" >>> END READ " + filepath)
         return self.chat, self.emojiArray
 
-    def extract(self, line:str) : 
-        if re.match(r'\[\d\d\.\d\d\.\d\d, \d\d:\d\d:\d\d\]', line) or " omitted" in line or " weggelassen" in line: # THIS IS CURRENTLY A WORKAROUND ... DONT KNOW WHY THE REGEX ISTN'T WORKING
+    def extract(self, line: str):
+        if re.match(r'\u200e?\[\d\d\.\d\d\.\d\d, \d\d:\d\d:\d\d\]', line):
             result = re.search(r'\[(.*?)\](.*?)\:(\s\S.*)', line)
-            
-            timestamp = result.group(1).strip().replace("\u200e","")
+
+            timestamp = result.group(1).strip().replace("\u200e", "")
             timestamp = datetime.datetime.strptime(timestamp, "%d.%m.%y, %H:%M:%S")
-            person = result.group(2).strip().replace("\u200e","")
-            message = result.group(3).strip().replace("\u200e","")
-            emojisFromMessage = ''.join(c for c in message if c in emoji.UNICODE_EMOJI['en'])
+            person = result.group(2).strip().replace("\u200e", "")
+            raw_message = result.group(3).strip()
+            message = raw_message.replace("\u200e", "")
+            emojis_from_message = ''.join(c for c in message if c in emoji.UNICODE_EMOJI['en'])
 
-            if len(emojisFromMessage) != 0 :
-                for singleEmoji in emojisFromMessage : 
+            if len(emojis_from_message) != 0:
+                for singleEmoji in emojis_from_message:
                     self.emojiArray.append(singleEmoji)
-            
-            message_type = self.return_message_type(message)
 
-            singleChatLineObject = self.directChatObject(timestamp, person, message, message_type)
-            self.chat.append(singleChatLineObject)
-        else :
+            message_type = self.return_message_type(raw_message)
+
+            single_chat_line_object = self.DirectChatObject(timestamp, person, message, message_type)
+            self.chat.append(single_chat_line_object)
+        else:
             self.chat[-1].message = self.chat[-1].message + "\n" + line
 
-    def return_message_type(self, message:str) : 
-        if "audio omitted" in message or "Audio weggelassen" in message: 
+    @staticmethod
+    def return_message_type(message: str):
+        if message == "\u200eaudio omitted" or "\u200eAudio weggelassen" in message:
             return MessageTypes.AUDIO
-        elif "image omitted" in message or "Bild weggelassen" in message: 
+        elif message == "\u200eimage omitted" or "\u200eBild weggelassen" in message:
             return MessageTypes.IMAGE
-        elif "video omitted" in message or "Video weggelassen" in message: 
+        elif message == "\u200evideo omitted" or "\u200eVideo weggelassen" in message:
             return MessageTypes.VIDEO
-        elif "GIF omitted" in message or "GIF weggelassen" in message: 
+        elif message == "\u200eGIF omitted" or "\u200eGIF weggelassen" in message:
             return MessageTypes.GIF
-        elif "sticker omitted" in message or "Sticker weggelassen" in message: 
+        elif message == "\u200esticker omitted" or "\u200eSticker weggelassen" in message:
             return MessageTypes.STICKER
-        elif "document omitted" in message or "Dokument weggelassen" in message: 
+        elif "\u200edocument omitted" in message or "\u200eDokument weggelassen" in message:
             return MessageTypes.DOCUMENT
-        else :
+        elif "\u200eLocation: " in message or "\u200eStandort: " in message:
+            return MessageTypes.LOCATION
+        elif "\u200eContact card omitted" in message or "\u200eKontaktkarte ausgelassen" in message:
+            return MessageTypes.CONTACT
+        elif "\u200e" in message: # catch all system messages and media messages in other languages
+            return MessageTypes.OTHER
+        else:
             return MessageTypes.TEXT

@@ -1,5 +1,9 @@
 import emoji
 from collections import Counter
+import logging
+
+import numpy as np
+
 from py_classes.models.MessageTypes import MessageTypes
 from nltk.corpus import stopwords
 
@@ -11,14 +15,18 @@ from sklearn.feature_extraction.text import TfidfTransformer
 german_stop_words = stopwords.words('german')
 
 
-class StatisticsPrinter():
-    def print_statistics(self, preprocessed_chat, emojiArray, number_print_emojis, number_print_words):
-        # self.print_message_type_statistics(preprocessed_chat)
-        # self.print_emoji_statistics(emojiArray, number_print_emojis)
-        # self.print_word_count(preprocessed_chat, number_print_words)
-        self.printBagOfWords(preprocessed_chat)
+class StatisticsPrinter:
 
-    def print_message_type_statistics(self, preprocessed_chat):
+    def print_statistics(self, preprocessed_chat, emoji_array, number_print_emojis, number_print_words):
+        chat_text_data = [chat for chat in preprocessed_chat if
+                          chat.message_type == MessageTypes.TEXT]  # only contains TEXT messages
+
+        self.print_message_type_statistics(preprocessed_chat)
+        self.print_emoji_statistics(emoji_array, number_print_emojis)
+        self.print_word_count(preprocessed_chat, number_print_words)
+
+    @staticmethod
+    def print_message_type_statistics(preprocessed_chat):
         print(" --- MESSAGE TYPE STATISTICS:")
         print(" ---- Chat Duration: " + str(
             (preprocessed_chat[-1].timestamp - preprocessed_chat[0].timestamp)) + " (" + str(
@@ -38,19 +46,23 @@ class StatisticsPrinter():
             sum(map(lambda x: x.message_type == MessageTypes.STICKER, preprocessed_chat))))
         print(" ---- Number of DOCUMENTS send: " + str(
             sum(map(lambda x: x.message_type == MessageTypes.DOCUMENT, preprocessed_chat))))
+        print(" ---- Number of CONTACTS send: " + str(
+            sum(map(lambda x: x.message_type == MessageTypes.CONTACT, preprocessed_chat))))
+        print(" ---- Number of LOCATIONS send: " + str(
+            sum(map(lambda x: x.message_type == MessageTypes.LOCATION, preprocessed_chat))))
+        print(" ---- Number of OTHERS send: " + str(
+            sum(map(lambda x: x.message_type == MessageTypes.OTHER, preprocessed_chat))))
 
-    def print_emoji_statistics(self, emojiArray, number_print_emojis):
+    @staticmethod
+    def print_emoji_statistics(emoji_array, number_print_emojis):
         print(" --- EMOJI STATISTICS:")
-        print(("{:<8} {:>8}").format('   EMOJI', 'NUMBER'))
-        emojiCounter = Counter(emojiArray).most_common()
+        print("{:>8} {:>8}".format('EMOJI', 'NUMBER'))
+        emoji_counter = Counter(emoji_array).most_common()
 
-        for i, item in enumerate(emojiCounter):
-            if number_print_emojis is None and i > 10:
-                break  # default number of displayed emojis
-            if (number_print_emojis is not None) and (number_print_emojis != "all") and (
-                    int(number_print_emojis) == i):
+        for i, item in enumerate(emoji_counter):
+            if i >= int(number_print_emojis):
                 break
-            print(("{:<8} {:>5}").format("    " + item[0], item[1]))
+            print("{:>5} {:>8}".format(item[0], item[1]))
 
     def print_word_count(self, preprocessed_chat, number_print_words):
         print(" --- WORD COUNT STATISTICS:")
@@ -71,16 +83,14 @@ class StatisticsPrinter():
         word_counter = self.word_counter_wo_stop_words(word_counter)
         print("   NUMBER OF DIFFERENT WORDS:" + str(len(word_counter)))
 
-        print(("{:<13} {:>10}").format('   WORD', '     NUMBER'))
+        print("{:^13} {:^12}".format('WORD', 'NUMBER'))
         for i, item in enumerate(word_counter):
-            if number_print_words is None and i > 15:
-                break  # default number of displayed words
-            if (number_print_words is not None) and (number_print_words != "all") and (
-                    int(number_print_words) == i):
+            if (number_print_words != "all") and (int(number_print_words) == i):
                 break
-            print(("{:<15} {:>8}").format("    " + item[0], item[1]))
+            print("    {0:<9} {1:>8}".format(item[0], item[1]))
 
-    def word_counter_wo_stop_words(self, word_counter):
+    @staticmethod
+    def word_counter_wo_stop_words(word_counter):
         def filter_stop_words(item):
             if item[0] in german_stop_words:
                 return False
@@ -92,37 +102,9 @@ class StatisticsPrinter():
             len(german_stop_words)) + " were possible)")
         return filtered_words
 
-    def printBagOfWords(self, preprocessed_chat):
-
-        docs = []
-        for message in preprocessed_chat:
-            if message.message_type == MessageTypes.TEXT:
-                docs.append(message.message)
-
-        # vectorizer = CountVectorizer(stop_words=frozenset(["hallo", "bin"]))
-        # vectors = vectorizer.fit_transform(docs)
-        #
-        # print(vectors.shape)
-        # vector_dimensions = vectorizer.get_feature_names_out()
-        # print(vector_dimensions)
-        #
-        # dataframe = pd.DataFrame(data=vectors.toarray(),
-        #                          columns=vector_dimensions)
-        #
-        # print(dataframe)
-
-        vectorizer = CountVectorizer(stop_words=frozenset(german_stop_words), analyzer='word', ngram_range=(1, 3), max_df=1.0, min_df=0.0,
-                                     max_features=None)
-
-        count_train = vectorizer.fit(docs)
-        X = vectorizer.transform(docs)
-
-        print(vectorizer)
-        print(vectorizer.get_feature_names())
-        transformer = TfidfTransformer(smooth_idf=False)
-        tfidf = transformer.fit_transform(counts)
-
-#        knn = KNeighborsClassifier(n_neighbors=3)
-#        knn.fit(vectors, vectors)
-#        predict = knn.predict(vectorizer.transform(['A new document.']).toarray())
-#        print(predict)
+    """
+    #TODO
+    - use tuple based on sender -> A always writes "Hey B" and vice versa
+    - use BERT
+        - can we combine BERT and a custom solution? Maybe weighted: Bert 50% and most used tuples 50%
+    """

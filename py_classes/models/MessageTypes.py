@@ -8,3 +8,6 @@ class MessageTypes(Enum):
     GIF = 5
     STICKER = 6
     DOCUMENT = 7
+    LOCATION = 8
+    CONTACT = 9
+    OTHER = 42
