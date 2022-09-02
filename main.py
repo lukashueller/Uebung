@@ -1,16 +1,13 @@
 import click
 import logging
 import coloredlogs
-from sklearn.feature_extraction.text import CountVectorizer
-from nltk.tokenize import TweetTokenizer
-
 
 import curses
 
 from py_classes.direct_chat_reader import DirectChatReader
 from py_classes.statistics_printer import StatisticsPrinter
-from py_classes.models.MessageTypes import MessageTypes
-
+from py_classes.german_bert import BERT
+from py_classes.ngram_predictor import NGRAM_Predictor
 
 @click.command()
 @click.option("-p", "--path", "path", type=str, help="The path of the text file to analyze", required=True)
@@ -47,7 +44,11 @@ def main(path: str, direct: bool, group: bool, interactive: bool, statistics: bo
 
 
 def next_word_prediction(chat_data):
-    NGRAM_MAX = 5
+
+    my_bert = BERT()
+    my_ngram_predictor = NGRAM_Predictor(chat_data)
+
+    my_ngram_predictor.predict_next_word("Hey maus ")
 
     stdscr = curses.initscr()
     curses.noecho()
@@ -56,44 +57,46 @@ def next_word_prediction(chat_data):
     curses.mousemask(1)
     stdscr.keypad(True)
 
-    docs = [message.message for message in chat_data if message.message_type == MessageTypes.TEXT]
-    vectorizer = CountVectorizer(analyzer='word', tokenizer=TweetTokenizer().tokenize, ngram_range=(1, NGRAM_MAX), max_df=1.0, min_df=0.0,
-                                 max_features=None)
-
-    counts = vectorizer.fit_transform(docs)  # counts = document term matrix
-
-    features = vectorizer.get_feature_names_out()
-    sum_vec = counts.sum(axis=0).tolist()[0]
-
-
-
     query = ""
-    results = []
+    ngram_results = []
+    bert_results = []
     while True:
         stdscr.clear()
         stdscr.addstr(0, 0, "Start typing: (Esc to quit) ", curses.A_REVERSE)
-        stdscr.addstr(1, 0, query, )
-        for i, res in enumerate(results[:10]):
-            stdscr.addstr(2+i, len(query), res[1], )
+        stdscr.addstr(11, 0, query, )
+        for i, res in enumerate(bert_results[:10]):
+            try:
+                stdscr.addstr(1+i, len(query), res, curses.COLOR_BLUE)
+            except:
+                pass
+
+        for i, res in enumerate(ngram_results[:10]):
+            try:
+                stdscr.addstr(12+i, len(query), res, curses.COLOR_GREEN)
+            except:
+                pass
 
         event = stdscr.getch()
         if event == curses.KEY_MOUSE:
             _, _, my, _, _ = curses.getmouse()
-            if 2 <= my < len(results[:10])+2:
-                query += results[my-2][1]
+            if 12 <= my < len(ngram_results[:10])+12:
+                query += ngram_results[my-12]
+            if 1 <= my < 11:
+                query += bert_results[my-1]
         else:
             try:
-                key = chr(event)
-                if key in ['KEY_BACKSPACE', '\b', '\x7f']:
+                if event == 127:
                     query = query[:-1]
-                if event == 27:
+                elif event == 27:
                     break
                 else:
+                    key = chr(event)
                     query += key
             except:
                 pass
-        can_complete_word = query[-1:] != " "
-        results = get_predictions(can_complete_word, preprocess_input(query, vectorizer), NGRAM_MAX, features, sum_vec)
+        if query != "":
+            ngram_results = my_ngram_predictor.predict_next_word(query)
+            bert_results = my_bert.get_bert_predictions(query)
 
     # ending curses session
     curses.nocbreak()
@@ -102,34 +105,6 @@ def next_word_prediction(chat_data):
     curses.endwin()
 
 
-def preprocess_input(text, vectorizer):
-    tokenizer = vectorizer.build_tokenizer()
-    preprocessor = vectorizer.build_preprocessor()
-    return tokenizer(preprocessor(text))
-
-
-def get_predictions(can_complete_word, input_array, NGRAM_MAX, features, sum_vec):
-    preprocessed_input = input_array[-NGRAM_MAX:]
-    results = []
-
-    for ngram_length in range(len(preprocessed_input), 0, -1):
-        search_string = " ".join(preprocessed_input) + ("" if can_complete_word else " ")
-        result = [
-            (sum_vec[i], f[len(search_string):] if len(search_string) > 0 else " " + f, ngram_length)
-            for (i, f)
-            in enumerate(features)
-            if f.startswith(search_string) and f.count(
-                " ") <= ngram_length and f != search_string
-        ]
-        result = sorted(result, key=lambda x: -x[0])
-        result = filter(lambda x: not x[1] in map(lambda x: x[1], results), result)
-        results += result
-
-        preprocessed_input.pop(0)
-
-        if len(results) >= 10:
-            break
-    return results
 
 
 
@@ -139,12 +114,6 @@ def get_predictions(can_complete_word, input_array, NGRAM_MAX, features, sum_vec
 if __name__ == "__main__":
     logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
 
-    coloredlogs.install(level='DEBUG')
-
-    logging.debug('DEBUG')
-    logging.info('INFO')
-    logging.warning('WARNUNG')
-    logging.error('ERROR')
-    logging.critical('CRITICAL')
+    coloredlogs.install(level='INFO')
 
     main()

@@ -42,7 +42,7 @@ class DirectChatReader:
             person = result.group(2).strip().replace("\u200e", "")
             raw_message = result.group(3).strip()
             message = raw_message.replace("\u200e", "")
-            emojis_from_message = ''.join(c for c in message if c in emoji.UNICODE_EMOJI['en'])
+            emojis_from_message = ''.join(emoji.distinct_emoji_list(message))
 
             if len(emojis_from_message) != 0:
                 for singleEmoji in emojis_from_message:
