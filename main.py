@@ -9,6 +9,7 @@ from py_classes.statistics_printer import StatisticsPrinter
 from py_classes.german_bert import BERT
 from py_classes.ngram_predictor import NGRAM_Predictor
 
+
 @click.command()
 @click.option("-p", "--path", "path", type=str, help="The path of the text file to analyze", required=True)
 @click.option("-d", "--direct", help="Analyze a private chat.", is_flag=True)
@@ -20,27 +21,27 @@ from py_classes.ngram_predictor import NGRAM_Predictor
                    "displayed (default: 10)")
 @click.option("-w", "--words", "number_print_words", type=int, default=15,
               help="type \"-1\" to get all words; otherwise only the requested number of most words emojis will be "
-               "displayed (default: 15)")
-
-
+              "displayed (default: 15)")
 def main(path: str, direct: bool, group: bool, interactive: bool, statistics: bool, number_print_emojis: int, number_print_words: int):
     logging.info(" > WHATSAPP ANALYSER STARTED")
     if direct and group:
-        logging.error("You can only use either private or group chats at a time.")
+        logging.error(
+            "You can only use either private or group chats at a time.")
     elif direct:
         chat_data = DirectChatReader().read_chat(path)
 
         if statistics:
-            StatisticsPrinter().print_statistics(chat_data[0], chat_data[1], number_print_emojis, number_print_words)
+            StatisticsPrinter().print_statistics(
+                chat_data[0], chat_data[1], number_print_emojis, number_print_words)
         if interactive:
             next_word_prediction(chat_data[0])
     elif group:
         logging.error("Group chat analysis is not supported at the moment.")
     else:
-        logging.error("You have not what type of chat you want to analyse. Check --help for more information.")
+        logging.error(
+            "You have not what type of chat you want to analyse. Check --help for more information.")
 
     logging.info(" > WHATSAPP ANALYSER TERMINATED")
-
 
 
 def next_word_prediction(chat_data):
@@ -103,12 +104,6 @@ def next_word_prediction(chat_data):
     stdscr.keypad(False)
     curses.echo()
     curses.endwin()
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
