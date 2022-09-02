@@ -68,7 +68,7 @@ class StatisticsPrinter:
 
         # Source: https://stackoverflow.com/questions/33404752/removing-emojis-from-a-string-in-python (modified)
         def give_emoji_free_text(text):
-            return emoji.get_emoji_regexp().sub(r'', text)
+            return emoji.replace_emoji(text, replace='')
 
         messages_as_text = ""
         for message in preprocessed_chat:
