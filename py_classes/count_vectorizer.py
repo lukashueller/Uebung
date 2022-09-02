@@ -5,10 +5,9 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
 import pandas as pd
 
-german_stop_words = stopwords.words('german')
-
 
 class CountVectorizer_Printer():
+    german_stop_words = stopwords.words('german')
 
     def print_count_vectorizer(self, preprocessed_chat):
         docs = []
@@ -16,7 +15,8 @@ class CountVectorizer_Printer():
             if message.message_type == MessageTypes.TEXT:
                 docs.append(message.message)
 
-        vectorizer = CountVectorizer(stop_words=frozenset(german_stop_words))
+        vectorizer = CountVectorizer(
+            stop_words=frozenset(self.german_stop_words))
         vectors = vectorizer.fit_transform(docs)
 
         vector_dimensions = vectorizer.get_feature_names_out()

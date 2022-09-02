@@ -1,14 +1,11 @@
-import click
-import logging
 import coloredlogs
-
-import curses
-
+import logging
+import click
 from py_classes.direct_chat_reader import DirectChatReader
 from py_classes.statistics_printer import StatisticsPrinter
-from py_classes.german_bert import BERT
 from py_classes.ngram_predictor import NGRAM_Predictor
-
+from py_classes.german_bert import BERT
+import curses
 import nltk
 nltk.download('stopwords')
 

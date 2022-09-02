@@ -12,10 +12,9 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.feature_extraction.text import TfidfTransformer
 
-german_stop_words = stopwords.words('german')
-
 
 class StatisticsPrinter:
+    german_stop_words = stopwords.words('german')
 
     def print_statistics(self, preprocessed_chat, emoji_array, number_print_emojis, number_print_words):
         chat_text_data = [chat for chat in preprocessed_chat if
@@ -89,17 +88,16 @@ class StatisticsPrinter:
                 break
             print("    {0:<9} {1:>8}".format(item[0], item[1]))
 
-    @staticmethod
-    def word_counter_wo_stop_words(word_counter):
+    def word_counter_wo_stop_words(self, word_counter):
         def filter_stop_words(item):
-            if item[0] in german_stop_words:
+            if item[0] in self.german_stop_words:
                 return False
             else:
                 return True
 
         filtered_words = list(filter(filter_stop_words, word_counter))
         print(" ---- FILTERED " + str(len(word_counter) - len(filtered_words)) + " stop words. (" + str(
-            len(german_stop_words)) + " were possible)")
+            len(self.german_stop_words)) + " were possible)")
         return filtered_words
 
     """
