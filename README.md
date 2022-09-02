@@ -8,13 +8,9 @@
 
 Even though other messaging services such as Telegram or Threema are becoming increasingly popular worldwide, WhatsApp remains the world’s most popular messenger with more than two billion active users per month (as of 02/22) [[Source]](https://de.statista.com/themen/1973/instant-messenger). WhatsApp is followed by the Chinese messaging alternative WeChat and Facebook Messenger. However, all alternatives of the messenger WhatsApp, which now belongs to the META Group, are used daily by only 20% of the population in Germany. In a survey from 2021 [[Source]](https://www.messengerpeople.com/de/whatsapp-nutzerzahlen-deutschland), more than 60% of respondents said they use WhatsApp daily.
 
-Many tools (such as WHATSAAN) allow only statistical analysis of the chat in terms of used words, emojis or the activity of the chat. Almost no other project tries to take a closer look at the content of a chat. Therefore, we decided to use Natural Language Processing (NLP) to analyze chat histories in more depth and set the following research questions for the project work:
+It is impressive that there are only a few tools that train NLP models based on chat histories of the world’s most popular messenger. Therefore in addition to a statistical analysis of chat histories, our tool enables the training of a next word prediction model that makes input suggestions based on the chat history and the pre-trained BERT model.
 
-## 2. Research questions
-1. Is it possible to identify the topic(s) of a chat using NLP?
-2. Is it possible to deduce what the communication is used for? (Work chat, friendly exchange, etc.)
-3. Is it possible to analyze the sentiment of a chat using NLP?
-## 3. How-To: Download WhatsApp chat history (iPhone)
+## 2. How-To: Download WhatsApp chat history (iPhone)
 1. Select the chat you are interested in and open it.
 2. Click on the name of your chat partner / chat group to go to the information page of the chat.
 3. Scroll down to the bottom and click on `Export Chat`.
@@ -23,7 +19,7 @@ Many tools (such as WHATSAAN) allow only statistical analysis of the chat in ter
 
 *A tutorial on how to create the chat archive on Android will be available soon.*
 
-## 4. Setup and Run WhatsApp sentiment Analyser 
+## 3. Setup and Run WhatsApp sentiment Analyser 
 **Clone repository and import data**  
 *Advice: You don't need to export your own chat history to test our code. We have also provided two sample chat histories in the repository.*  
 If you have your own chat histories, save them in the /data folder in the appropriate subfolder. The two subfolders are for differentiating between 1:1 chats and group chats.
