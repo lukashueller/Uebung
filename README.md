@@ -1,4 +1,4 @@
-# WhatsAppSentimentAnalysis
+# WhatsAppWordPredicton & ChatAnalyzer
 # TODOS
  [ ] add `python -m nltk.downloader stopwords` to README (used for downloading the stopwordlist)  
 
