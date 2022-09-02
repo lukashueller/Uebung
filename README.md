@@ -1,6 +1,8 @@
 # WhatsAppWordPredicton & ChatAnalyzer
+
 # TODOS
- [ ] add `python -m nltk.downloader stopwords` to README (used for downloading the stopwordlist)  
+- remove direct and group chat flags
+- check if the defaults are correct
 
 ### This project allows you to deeply evaluate your own WhatsApp chat history. 
 
@@ -26,15 +28,43 @@ If you have your own chat histories, save them in the /data folder in the approp
 
 **Install required modules:**
 ```console
-sudo pip3 install Click
-sudo pip3 install emoji
-sudo pip3 install -U nltk
+pip3 install -r requirements.txt
 ```
 
 **Downloads Stopwords**
+In order to run the script nltk must have downloaded the stopword list. To do this, run the following command:
 ```console
 python -m nltk.downloader stopwords
 ```
+
+This script has two main functions:
+1. Analyze a Whatsapp-Chat and show interesting statistics, such as number of messages, most used emoijs and most used words (excluding stop-words).
+2. An interactive tool, that predicts the next word or part of word. The prediction is based on the one hand on the BERT language model and on the other hand on a simple language model based on the data from the WhatsApp chat.
+
+**Flags**
+```console
+-p, --path : path to the chat-export (txt-file)
+-d, --direct : flag to indicate, that the given chat is a direct chat (1 to 1)
+-g, --group : flag to indicate, that the given chat is a group chat
+-s, --statistics : flag to indicate, that the program should print chat statistics
+-e, --emoji : specify the number of emojis the statistic should contain (default 10; -1 for all)
+-w, --words : specify the number of words the statistic should contain (default 20; -1 for all]
+-i, --interactive : flag to indicate, that the programm should start the interactive mode, with the next-word prediction
+```
+
+## Examples
+**Show statistics for a direct chat**
+```console
+python3 main.py -p /data/direct_chats/example.txt -d -s
+```
+
+**Start interactive next word predictions for a direct chat**
+```console
+python3 main.py -p /data/direct_chats/example.txt -d -i
+```
+
+
+
 
 **Run the analyser**
 ```console
@@ -52,5 +82,6 @@ python3 main.py -d "example.txt" -e "all" -w "all"
 ```
 
 *Attention: currently the code only works with German or English WhatsApp exports!*
+*The next word pretictions uses the german version of BERT, the chat-individual predictions works with both languages.*
 
 Check `--help` for more information.
