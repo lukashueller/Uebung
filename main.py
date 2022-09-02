@@ -6,7 +6,6 @@ from py_classes.statistics_printer import StatisticsPrinter
 from py_classes.ngram_predictor import NGRAM_Predictor
 from py_classes.german_bert import BERT
 import curses
-import nltk
 
 
 @click.command()
@@ -107,7 +106,6 @@ def next_word_prediction(chat_data):
 
 if __name__ == "__main__":
     logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
-    nltk.download('stopwords')
 
     coloredlogs.install(level='INFO')
 
