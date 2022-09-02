@@ -1,13 +1,11 @@
 from collections import Counter
 from py_classes.models.MessageTypes import MessageTypes
-import nltk
+from nltk.corpus import stopwords
 
 from sklearn.feature_extraction.text import CountVectorizer
 import pandas as pd
 
-nltk.download('stopwords')
-
-german_stop_words = nltk.corpus.stopwords.words('german')
+german_stop_words = stopwords.words('german')
 
 
 class CountVectorizer_Printer():

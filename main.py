@@ -9,6 +9,9 @@ from py_classes.statistics_printer import StatisticsPrinter
 from py_classes.german_bert import BERT
 from py_classes.ngram_predictor import NGRAM_Predictor
 
+import nltk
+nltk.download('stopwords')
+
 
 @click.command()
 @click.option("-p", "--path", "path", type=str, help="The path of the text file to analyze", required=True)
