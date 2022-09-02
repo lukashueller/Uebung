@@ -1,4 +1,6 @@
 # WhatsAppSentimentAnalysis
+# TODOS
+ [ ] add `python -m nltk.downloader stopwords` to README (used for downloading the stopwordlist)  
 
 ### This project allows you to deeply evaluate your own WhatsApp chat history. 
 

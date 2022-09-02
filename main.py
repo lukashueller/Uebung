@@ -75,8 +75,9 @@ def next_word_prediction(chat_data):
             except:
                 pass
 
-        event = stdscr.getch()
-        if event == curses.KEY_MOUSE:
+        key = stdscr.getkey()
+
+        if key == "KEY_MOUSE":
             _, _, my, _, _ = curses.getmouse()
             if 12 <= my < len(ngram_results[:10])+12:
                 query += ngram_results[my-12]
@@ -84,13 +85,13 @@ def next_word_prediction(chat_data):
                 query += bert_results[my-1]
         else:
             try:
-                if event == 127:
+                if ord(key) == 127:
                     query = query[:-1]
-                elif event == 27:
+                elif ord(key) == 27:
                     break
                 else:
-                    key = chr(event)
-                    query += key
+                    if not key in "\n\t":
+                        query += key
             except:
                 pass
         if query != "":
