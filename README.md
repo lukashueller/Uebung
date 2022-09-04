@@ -44,41 +44,36 @@ This script has two main functions:
 **Flags**
 ```console
 -p, --path : path to the chat-export (txt-file)
--d, --direct : flag to indicate, that the given chat is a direct chat (1 to 1)
--g, --group : flag to indicate, that the given chat is a group chat
 -s, --statistics : flag to indicate, that the program should print chat statistics
 -e, --emoji : specify the number of emojis the statistic should contain (default 10; -1 for all)
--w, --words : specify the number of words the statistic should contain (default 20; -1 for all]
+-w, --words : specify the number of words the statistic should contain (default 15; -1 for all]
 -i, --interactive : flag to indicate, that the programm should start the interactive mode, with the next-word prediction
 ```
 
 ## Examples
 **Show statistics for a direct chat**
 ```console
-python3 main.py -p /data/direct_chats/example.txt -d -s
+python3 main.py -p /data/direct_chats/example.txt -s
 ```
 
 **Start interactive next word predictions for a direct chat**
 ```console
-python3 main.py -p /data/direct_chats/example.txt -d -i
+python3 main.py -p /data/direct_chats/example.txt -i
 ```
-
-
-
 
 **Run the analyser**
 ```console
-python3 main.py -d "example.txt"
+python3 main.py -p /data/direct_chats/example.txt
 ```
 
 **Specify the number of printed statistics**  
 Display only the 5 most frequent occurrences:
 ```console
-python3 main.py -d "example.txt" -e 5 -w 5
+python3 main.py -p /data/direct_chats/example.txt -e 5 -w 5
 ```
 Display all occurences:
 ```console
-python3 main.py -d "example.txt" -e "all" -w "all"
+python3 main.py -p /data/direct_chats/example.txt -e -1 -w -1
 ```
 
 *Attention: currently the code only works with German or English WhatsApp exports!*

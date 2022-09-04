@@ -59,7 +59,7 @@ class StatisticsPrinter:
         emoji_counter = Counter(emoji_array).most_common()
 
         for i, item in enumerate(emoji_counter):
-            if i >= int(number_print_emojis):
+            if i == int(number_print_emojis):
                 break
             print("{:>5} {:>8}".format(item[0], item[1]))
 
@@ -84,7 +84,7 @@ class StatisticsPrinter:
 
         print("{:^13} {:^12}".format('WORD', 'NUMBER'))
         for i, item in enumerate(word_counter):
-            if (number_print_words != "all") and (int(number_print_words) == i):
+            if int(number_print_words) == i:
                 break
             print("    {0:<9} {1:>8}".format(item[0], item[1]))
 
