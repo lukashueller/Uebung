@@ -1,9 +1,4 @@
 # WhatsAppWordPredicton & ChatAnalyzer
-
-# TODOS
-- remove direct and group chat flags
-- check if the defaults are correct
-
 ### This project allows you to deeply evaluate your own WhatsApp chat history. 
 
 ## 1. What is the aim of the project?
