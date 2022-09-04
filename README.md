@@ -46,12 +46,12 @@ This script has two main functions:
 ```
 
 ## Examples
-**Show statistics for a direct chat**
+**Show statistics**
 ```console
 python3 main.py -p /data/direct_chats/example.txt -s
 ```
 
-**Start interactive next word predictions for a direct chat**
+**Start interactive next word predictions**
 ```console
 python3 main.py -p /data/direct_chats/example.txt -i
 ```
