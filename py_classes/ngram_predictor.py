@@ -43,17 +43,17 @@ class NGRAM_Predictor:
         results = []
 
         for ngram_length in range(len(preprocessed_input), 0, -1):
-            sss = " ".join(preprocessed_input) + \
-                ("" if can_complete_word else " ")
+            sss = " ".join(preprocessed_input) + ("" if can_complete_word else " ")
             sse = sss[:-1] + chr(ord(sss[-1])+1)
             start_index = bisect_left(self.features, sss)
             end_index = bisect_left(self.features, sse)
 
             result = [
-                (self.sum_vec[i], self.features[i][len(sss):] if len(
-                    sss) > 0 else " " + self.features[i], ngram_length)
+                (self.sum_vec[i],
+                 self.features[i][len(sss):] if len(sss) > 0 else " " + self.features[i],
+                 ngram_length)
                 for i
-                in range(start_index, end_index+1)
+                in range(start_index, end_index)
             ]
 
             result = [
@@ -64,8 +64,8 @@ class NGRAM_Predictor:
             ]
 
             result = sorted(result, key=lambda x: -x[0])
-            result = filter(lambda x: not x[1] in [res[1]
-                            for res in results], result)
+            result = list(filter(lambda x: not x[1] in [res[1]
+                            for res in results], result))
             results += result
 
             preprocessed_input.pop(0)
